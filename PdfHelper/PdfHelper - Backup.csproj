@@ -10,7 +10,6 @@
     <Description>Um gateway para auxiliar na integração com o serviço de gerador de pdf do Gotenberg</Description>
     <Copyright>MIT</Copyright>
     <RepositoryUrl>https://github.com/VConhariki/PdfHelper</RepositoryUrl>
-    <PackageId>GotenbergGatewayHelper</PackageId>
   </PropertyGroup>
 
 </Project>
