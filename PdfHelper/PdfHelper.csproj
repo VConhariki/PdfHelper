@@ -11,6 +11,7 @@
     <Copyright>MIT</Copyright>
     <RepositoryUrl>https://github.com/VConhariki/PdfHelper</RepositoryUrl>
     <PackageId>GotenbergGatewayHelper</PackageId>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
 </Project>

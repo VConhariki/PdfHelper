@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using PdfHelper;
+using System.Text;
 
 namespace PdfGenerator.Service
 {
@@ -7,16 +8,16 @@ namespace PdfGenerator.Service
 
         private static readonly HttpClient client = new();
 
-        public static async Task<string> HtmlToBase64(string html, string url)
+        public static async Task<string> HtmlToBase64(string html, string url, PdfParameterDto parameter)
         {
-            var bytes = await GetBytesFromHtml(html, url);
+            var bytes = await GetBytesFromHtml(html, url, parameter);
             var base64 = GetBase64FromBytes(bytes);
             return base64;
         }
 
-        public static async Task<MemoryStream> HtmlToMemoryStream(string html, string url)
+        public static async Task<MemoryStream> HtmlToMemoryStream(string html, string url, PdfParameterDto parameter)
         {
-            var bytes = await GetBytesFromHtml(html, url);
+            var bytes = await GetBytesFromHtml(html, url, parameter);
             var memoryStream = GetMemoryStreamFromBytes(bytes);
             return memoryStream;
         }
@@ -36,12 +37,19 @@ namespace PdfGenerator.Service
         }
 
         #region private
-        private static async Task<byte[]> GetBytesFromHtml(string html, string url)
+        private static async Task<byte[]> GetBytesFromHtml(string html, string url, PdfParameterDto parameter)
         {
-            var requestContent = new MultipartFormDataContent();
+            var paperSize = PaperSize.GetPaperSize(parameter.PaperType);
             var stringContent = new StringContent(html, Encoding.UTF8, "text/html");
-
-            requestContent.Add(stringContent, "file", "index.html");
+            var requestContent = new MultipartFormDataContent()
+            {
+                { stringContent, "file", "index.html" },
+                { new StringContent(parameter.Landscape.ToString()), "landscape" },
+                { new StringContent(parameter.Scale.ToString()), "scale" },
+                { new StringContent(paperSize.Width.ToString()), "paperWidth" },
+                { new StringContent(paperSize.Height.ToString()), "paperHeight" },
+                { new StringContent(parameter.PerformanceMode.ToString()), "skipNetworkIdleEvent" }
+            };
 
             var response = await client.PostAsync(url, requestContent);
 
